@@ -10,9 +10,11 @@ export default class Component {
     }
 
     reload(){
-        console.log('RELOAD')
-
         if(this.element && this.element.parentElement){
+            let temp = document.createElement('h1');
+            temp.textContent = String(new Date());
+            this.element.prepend(temp);
+
             let oldElement = this.element;
             let newElement = this.render();
 
@@ -39,11 +41,8 @@ export default class Component {
             //change CamelCase
         if(template.hasOwnProperty('events'))
             for(let eventName in template.events){
-                console.log('EVENT_NAME: ' + eventName);
-                console.log(element);
                 if(eventName in element) {
                     element[eventName] = template.events[eventName];
-                    console.log('EVENT_FUNC_NAME: ', template.events[eventName].name);
                     window[template.events[eventName].name] = template.events[eventName];
                 }
             }

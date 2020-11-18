@@ -1,80 +1,10 @@
 export const cpmStore = {
     state: {
-        tickets: [
-            {
-                id: 1,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 2,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 3,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 4,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 5,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 6,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 7,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 8,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 9,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-            {
-                id: 10,
-                dateOfCreation: '17.11.2020',
-                type: 'support',
-                status: 'active',
-                closingDate: '22.11.2020'
-            },
-        ],
+        tickets: [],
         ticketTypes: {
             example: {
                 availableParameters: {
+                    comment: 'Comment',
                     dateOfCreation: 'Date of creation',
                     type: 'Type',
                     status: 'Status',
@@ -150,26 +80,81 @@ export const cpmStore = {
             status: 'Ticket status'
         },
     },
-    actions: {
-        addCpmTicket(context, payload) {
-            context.commit('addItem', payload);
+    getters: {
+        getCpmTickets(context, payload){
+            if(!context.state.cpm.tickets.length)
+                context.dispatch('loadCpmTickets');
 
+            console.log('GETTER RETURNS')
+            console.log(context.state.cpm.tickets)
+            return context.state.cpm.tickets;
+        }
+    },
+    actions: {
+        async loadCpmTickets(context, payload){
+            console.groupCollapsed('FETCH GET /problems.json');
+            let tickets = await getCpmTickets();
+            console.log(tickets);
+            console.groupEnd();
+            context.commit('loadCpmTickets', tickets);
+        },
+        async addCpmTicket(context, payload) {
+            console.groupCollapsed('FETCH POST /problems.json');
+
+            let response = await postCpmTicket(payload)
+
+            if (!response.ok) {
+                console.log('FAILED');
+                return;
+            }
+
+            let tickets = await getCpmTickets();
+
+            console.groupEnd();
+            context.commit('loadCpmTickets', tickets);
         },
         clearCpmTicket(context, payload) {
-            context.commit('clearItem', payload);
+            context.commit('clearCpmTicket', payload);
         },
     },
     mutations: {
+        loadCpmTickets(state, payload){
+            state.cpm.tickets = payload;
+
+            return state;
+        },
         addCpmTicket(state, payload) {
             payload.id = state.todo.items.length + 1;
-            state.todo.items.push(payload);
+            state.cpm.tickets.push(payload);
 
             return state;
         },
         clearCpmTicket(state, payload) {
-            state.todo.items.splice(state.todo.items.indexOf(payload.text), 1);
+            state.cpm.tickets.splice(state.todo.items.indexOf(payload.text), 1);
 
             return state;
         },
-    }
+    },
+}
+
+async function getCpmTickets(){
+    const url = 'https://nc-csrd.firebaseio.com/problems.json';
+    let response = await fetch(url);
+    let data = await response.json();
+    console.log(data);
+    return Object.entries(data).map(ticketArray => {
+        let ticket = ticketArray[1];
+        ticket['id'] = ticketArray[0];
+        return ticket;
+    });
+}
+
+async function postCpmTicket(payload){
+    const url = 'https://nc-csrd.firebaseio.com/problems.json';
+    let response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    });
+    console.log(response);
+    return response;
 }

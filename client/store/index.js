@@ -16,5 +16,9 @@ export default new Store({
     mutations: {
         ...todoStore.mutations,
         ...cpmStore.mutations
+    },
+    getters: {
+        ...todoStore.getters,
+        ...cpmStore.getters
     }
 });

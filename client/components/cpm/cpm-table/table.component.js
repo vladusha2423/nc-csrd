@@ -7,10 +7,14 @@ export default class CpmTable extends Component {
         super({
             store
         });
-        store.events.subscribe('addCpmTicket', this.reload());
+        store.events.subscribe('addCpmTicket', this.reload.bind(this));
+        store.events.subscribe('loadCpmTickets', this.reload.bind(this));
     }
 
     render() {
+        // let tickets = store.getter('getCpmTickets');
+        // console.log('GETTER CPM TICKETS')
+        // console.log(tickets);
         return this.compile(template.call(this));
     }
 }

@@ -7,6 +7,7 @@ export default class Store {
         this.actions = {};
         this.mutations = {};
         this.state = {};
+        this.getters = {};
 
         this.status = 'resting';
 
@@ -20,22 +21,40 @@ export default class Store {
             this.mutations = params.mutations;
         }
 
+        if(params.hasOwnProperty('getters')) {
+            this.getters = params.getters;
+        }
+
         this.state = new Proxy((params.state || {}), {
             set: function(state, key, value) {
 
                 state[key] = value;
 
-                console.log(`stateChange: ${key}: ${value}`);
-
-                // this.events.publish('stateChange', this.state);
-
-
-
+                console.groupCollapsed(`STATE was changed`);
+                console.log(`${key}: ${JSON.stringify(value)}`);
+                console.groupEnd();
                 this.status = 'resting';
 
                 return true;
             }
         });
+    }
+
+    getter(getterKey, payload){
+        if(typeof this.getters[getterKey] !== 'function') {
+            console.error(`Action "${getterKey} doesn't exist.`);
+            return false;
+        }
+
+        console.groupCollapsed(`GETTER: ${getterKey}`);
+
+        let data = this.getters[getterKey](this, payload);
+
+        console.log(data);
+
+        console.groupEnd();
+
+        return data;
     }
 
     dispatch(actionKey, payload) {
@@ -52,9 +71,6 @@ export default class Store {
         this.actions[actionKey](this, payload);
 
         console.groupEnd();
-
-        console.log('DISPATCH this.events')
-        console.log(this.events);
 
         return true;
     }

@@ -9,9 +9,6 @@ export default class PubSub {
             this.events[event] = [];
         }
 
-        console.log('SUBSCRIBE this.events')
-        console.log(this.events);
-
         return this.events[event].push(callback);
     }
 
@@ -20,9 +17,6 @@ export default class PubSub {
         if(!this.events.hasOwnProperty(event)) {
             return [];
         }
-
-        console.log('PUBLISH this.events')
-        console.log(this.events);
 
         return this.events[event].map(callback => callback(data));
     }

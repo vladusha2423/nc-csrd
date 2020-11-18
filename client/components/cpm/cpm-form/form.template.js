@@ -9,11 +9,11 @@ export const template = function(){
                 classList: ['cpm-form__title'],
                 textContent: 'Create a ticket',
             },
-            {
-                tagName: 'p',
-                classList: ['cpm-form__paragraph'],
-                textContent: JSON.stringify(this.props.store.state.cpm.tickets),
-            },
+            // {
+            //     tagName: 'p',
+            //     classList: ['cpm-form__paragraph'],
+            //     textContent: JSON.stringify(this.props.store.state.cpm.tickets),
+            // },
             {
                 tagName: 'div',
                 attributes: {
@@ -34,10 +34,12 @@ export const template = function(){
                                 textContent: ticketParams[param],
                                 children: [
                                     {
-                                        tagName: 'input',
+                                        tagName: param === 'comment' ? 'textarea' : 'input',
                                         attributes: {
                                             name: param,
-                                            type: 'text'
+                                            type: 'text',
+                                            rows: param === 'comment' ? '5' : '',
+                                            cols: param === 'comment' ? '40' : '',
                                         },
                                         classList: ['cpm-form__text-input']
                                     }

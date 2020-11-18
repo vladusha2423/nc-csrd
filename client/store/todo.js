@@ -8,11 +8,20 @@ export const todoStore = {
             'Тоже заебись'
         ],
     },
+    getters: {
+        getItems(context, payload){
+            return context.state.todo.items;
+        }
+    },
     actions: {
         addItem(context, payload) {
+            //типа загрузка на сервак
+            //типа выгрузка с сервака
             context.commit('addItem', payload);
         },
         clearItem(context, payload) {
+            //типа загрузка на сервак
+            //типа выгрузка с сервака
             context.commit('clearItem', payload);
         },
     },

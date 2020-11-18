@@ -9,7 +9,7 @@ export default class List extends Component {
         this.methods = {
             addItem: function(){
                 let input = document.querySelector('.list__input');
-                store.dispatch('addItem', input.value);
+                store.commit('addItem', input.value);
             },
             clearItem: function(event){
                 store.dispatch('clearItem', event.target.previousElementSibling.textContent);
@@ -20,6 +20,7 @@ export default class List extends Component {
     }
 
     render() {
+        console.log(store.getter('getItems'))
         return this.compile(listTemplate.call(this));
     }
 }

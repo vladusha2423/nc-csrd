@@ -1,5 +1,8 @@
+import store from "../../../store";
+
 export const template = function(){
-    let tickets = this.props.store.state.cpm.tickets;
+    let tickets = this.props.store.getter('getCpmTickets');
+    let params = this.props.store.state.cpm.ticketTypes.example.availableParameters;
     return {
         tagName: 'div',
         classList: ['cpm-table'],
@@ -9,6 +12,11 @@ export const template = function(){
                 classList: ['cpm-table__title'],
                 textContent: 'List of tickets'
             },
+            // {
+            //     tagName: 'h3',
+            //     classList: ['cpm-table__title'],
+            //     textContent: JSON.stringify(tickets)
+            // },
             {
                 tagName: 'div',
                 classList: ['cpm-table__list'],
@@ -17,13 +25,25 @@ export const template = function(){
                         tagName: 'div',
                         classList: ['cpm-table__ticket'],
                         children: [
-                            ...Object.values(ticket).map(value => { return {
+                            ...Object.keys(params).map(param => {
+                                return {
+                                tagName: 'div',
+                                classList: ['cpm-table__ticket-col'],
+                                textContent: ticket[param]
+                            }})
+                        ]
+                    }}),
+                    {
+                        tagName: 'div',
+                        classList: ['cpm-table__ticket', 'cpm-table__ticket_header'],
+                        children: [
+                            ...Object.values(params).map(value => { return {
                                 tagName: 'div',
                                 classList: ['cpm-table__ticket-col'],
                                 textContent: value
                             }})
                         ]
-                    }})
+                    },
                 ]
             },
         ]

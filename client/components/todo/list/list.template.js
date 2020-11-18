@@ -1,4 +1,5 @@
 export const listTemplate = function(){
+    let items = this.props.store.getter('getItems');
     return {
         tagName: 'div',
         classList: ['list'],
@@ -7,7 +8,7 @@ export const listTemplate = function(){
                 tagName: 'ul',
                 classList: ['list__content'],
                 children: [
-                    ...this.props.store.state.todo.items.map(text => {
+                    ...items.map(text => {
                         return {
                             tagName: 'li',
                             classList: ['list__item'],
